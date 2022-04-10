@@ -1,4 +1,4 @@
-name: EGM722_Assessment
+name: EGM722_assess
 channels:
   - conda-forge
   - defaults
