@@ -1,2 +1,2 @@
-# EGM722_Assessment
+# EGM722_assess
 working files for module assessment
