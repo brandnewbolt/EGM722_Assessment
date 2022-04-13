@@ -1,0 +1,35 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 28
+    RS_ID Decimal (19, 8) ;
+    RS_LENGTH Decimal (19, 8) ;
+    RSC_ID Decimal (19, 8) ;
+    UFI Char (12) ;
+    SUBCAT_ID Decimal (19, 8) ;
+    CAT_ID Decimal (19, 8) ;
+    RSC_AREA Decimal (19, 8) ;
+    RSC_ACAREA Decimal (19, 8) ;
+    RS_MAP Char (14) ;
+    RS_PIPE Decimal (19, 8) ;
+    RS_SLOPE Decimal (19, 8) ;
+    RS_ELEVMAX Decimal (19, 8) ;
+    RS_ELEVMIN Decimal (19, 8) ;
+    RS_ORDER Decimal (19, 8) ;
+    RS_NSCORE Decimal (19, 8) ;
+    RS_ICV Char (2) ;
+    RS_LTENSEC Char (6) ;
+    RS_CMPI1 Char (2) ;
+    RS_CMPP1 Char (2) ;
+    RS_CMPI2 Char (2) ;
+    RS_CMPP2 Char (2) ;
+    RS_WBODY Decimal (19, 8) ;
+    RS_RCV Char (6) ;
+    RS_NSCOR_C Char (10) ;
+    RS_NAME Char (50) ;
+    RS_SVDIV Decimal (19, 8) ;
+    RS_INFO Char (50) ;
+    SHAPE_LEN Decimal (19, 11) ;

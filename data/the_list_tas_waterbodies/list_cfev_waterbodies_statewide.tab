@@ -1,0 +1,31 @@
+!table
+!version 300
+!charset WindowsLatin1
+!edit_version 450
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 23
+    WB_ID Decimal (19, 8) ;
+    WB_NAME Char (23) ;
+    WB_AREA Decimal (19, 8) ;
+    WB_ELEV Decimal (19, 8) ;
+    RSC_ID Decimal (19, 8) ;
+    UFI Char (12) ;
+    SUBCAT_ID Decimal (19, 8) ;
+    CAT_ID Decimal (19, 8) ;
+    WB_MAP Char (14) ;
+    WB_DEPTH Char (2) ;
+    WB_NSCORE Decimal (19, 8) ;
+    WB_ICV Char (2) ;
+    WB_LTENSEC Char (6) ;
+    WB_CMPI1 Char (2) ;
+    WB_CMPP1 Char (2) ;
+    WB_CMPI2 Char (2) ;
+    WB_CMPP2 Char (2) ;
+    WB_RCV Char (6) ;
+    WB_NSCOR_C Char (10) ;
+    WB_SVDIV Decimal (19, 8) ;
+    WB_INFO Char (50) ;
+    SHAPE_AREA Decimal (19, 11) ;
+    SHAPE_LEN Decimal (19, 11) ;
