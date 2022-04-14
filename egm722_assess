@@ -1,0 +1,128 @@
+#docstring here - what does the code do?
+
+# this lets us use the figures interactively
+%matplotlib notebook
+
+#import modules (straight from wk2&3 so far) - do i need more?
+import pandas as pd
+import geopandas as gpd
+import matplotlib.pyplot as plt
+from cartopy.feature import ShapelyFeature
+import cartopy.crs as ccrs
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+
+#enable interactive plotting
+plt.ion()
+
+#Define functions
+#generate handles to create legend for map features
+def generate_handles(labels, colors, edge='k', alpha=1):
+    lc = len(colors)  # get the length of the color list
+    handles = []
+    for i in range(len(labels)):
+        handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
+    return handles
+
+# create a scale bar of length 20 km in the upper right corner of the map
+# adapted this question: https://stackoverflow.com/q/32333870
+# answered by SO user Siyh: https://stackoverflow.com/a/35705477
+def scale_bar(ax, location=(0.92, 0.95)):
+    llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
+    sbllx = (llx1 + llx0) / 2
+    sblly = lly0 + (lly1 - lly0) * location[1]
+
+    tmc = ccrs.TransverseMercator(sbllx, sblly)
+    x0, x1, y0, y1 = ax.get_extent(tmc)
+    sbx = x0 + (x1 - x0) * location[0]
+    sby = y0 + (y1 - y0) * location[1]
+
+    plt.plot([sbx, sbx - 20000], [sby, sby], color='k', linewidth=9, transform=tmc)
+    plt.plot([sbx, sbx - 10000], [sby, sby], color='k', linewidth=6, transform=tmc)
+    plt.plot([sbx-10000, sbx - 20000], [sby, sby], color='w', linewidth=6, transform=tmc)
+
+    plt.text(sbx, sby-4500, '20 km', transform=tmc, fontsize=8)
+    plt.text(sbx-12500, sby-4500, '10 km', transform=tmc, fontsize=8)
+    plt.text(sbx-24500, sby-4500, '0 km', transform=tmc, fontsize=8)
+
+
+#load lga vector outline polygon for central highlands, check row header and CRS
+lga = gpd.read_file('data/tas_lga.shp')
+print(lga.head())
+lga.crs
+
+#load land vector polygons for tasmania, check row header and CRS
+land = gpd.read_file('data/land_100k.shp')
+print(land.head())
+land.crs
+
+#load water vector polygons for tasmania, check row header and CRS
+water = gpd.read_file('data/water.shp')
+print(water.head())
+water.crs
+
+#load roads vector lines for tasmania, check row header and CRS
+roads = gpd.read_file('data/tas_roads.shp')
+print(roads.head())
+roads.crs
+
+#load boreholes vector points for tasmania, check row header and CRS
+bhs = gpd.read_file('data/drill_eng_geo.shp')
+print(bhs.head())
+bhs.crs
+
+#check if crs is the same in datasets; prints true or false
+print(lga.crs == land.crs)
+#test these also
+#assert lga.crs == land.crs) #to raise an error if not true
+#print(lga.crs == land.crs == water.crs == roads.crs == bhs.crs)
+
+#any changes in crs required? if so use following as example
+#lga=lga.to_crs(epsg=20251)
+
+#define my crs
+myCRS = ccrs.UTM(51)
+
+#create a subset of tas lgas to get central highlands lga
+#see https://geopandas.org/en/stable/gallery/plot_clip.html
+# Create a subset of the world data that is just the South American continent
+ch_lga = lga[lga["LGA_NAME"] == "Central Highlands Council"]
+
+#clip all state wide vector layers to central highlands lga subset
+#see https://geopandas.org/en/stable/gallery/plot_clip.html
+land_clipped = land.clip(ch_lga)
+water_clipped = water.clip(ch_lga)
+roads_clipped = roads.clip(ch_lga)
+bhs_clipped = bhs.clip(ch_lga)
+
+#plot to see how this worked
+#see https://geopandas.org/en/stable/gallery/spatial_joins.html
+land_clipped.plot()
+water_clipped.plot()
+bhs_clipped.plot()
+roads_clipped.plot()
+
+#spatial join between clipped land and water layers and show table
+join_lw = gpd.sjoin(land_clipped, water_clipped, how='inner', lsuffix='left', rsuffix='right')
+print(join_lw)
+
+#drop the index_right column in order to do second join (python wont allow multiple columns by same name)
+join_lw.drop('index_right', axis=1, inplace=True)
+
+#spatial join join_landwater to bh vector layer
+join_lwbhs = gpd.sjoin(join_lw, bhs_clipped, how='inner')
+print(join_lwbh.head())
+
+#run some queries
+#no of rock category polygons and their geological age in the central highlands
+print(join_lwbhs.groupby(['ROCK','GEO_AGE']))
+
+#name of boreholes in each rock category, age and depth in central highlands
+print(join_lwbhs.groupby(['ROCK', 'GEO-AGE', 'NAME'])['Length'].count())
+
+#create a map view
+
+
+#add data to map
+
+

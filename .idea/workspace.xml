@@ -5,7 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6fcfe558-5d13-4f0d-ba30-05ee5b431ceb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.cpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.dbf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.prj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.sbn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.sbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.shp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.shp.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/tas_lga.shx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.aprx" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.aprx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/egm722_assess" beforeDir="false" afterPath="$PROJECT_DIR$/egm722_assess" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,13 +36,24 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="27iSkhOAxjd9DxL2848aC1IgoFz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Tasmania_datasets" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\GIS_Course_Datasets\Tasmania_datasets" />
+      <recent name="C:\GIS_Course_Datasets\EGM722_Programming\EGM722_Assessment" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -55,5 +76,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
