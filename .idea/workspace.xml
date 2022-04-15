@@ -5,17 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6fcfe558-5d13-4f0d-ba30-05ee5b431ceb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.cpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.dbf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.prj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.sbn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.sbx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.shp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.shp.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/tas_lga.shx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.aprx" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.aprx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.fdt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.fdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.fnm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.frq" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.nrm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.prx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.tii" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3n.tis" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/segments.gen" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/segments.gen" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/segments_43" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/egm722_assess" beforeDir="false" afterPath="$PROJECT_DIR$/egm722_assess" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.ipynb" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

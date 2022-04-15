@@ -80,13 +80,9 @@ print(lga.crs == land.crs)
 #any changes in crs required? if so use following as example
 #lga=lga.to_crs(epsg=20251)
 
-#define my crs
-myCRS = ccrs.UTM(51)
-
 #create a subset of tas lgas to get central highlands lga
 #see https://geopandas.org/en/stable/gallery/plot_clip.html
-# Create a subset of the world data that is just the South American continent
-ch_lga = lga[lga["LGA_NAME"] == "Central Highlands Council"]
+ch_lga = tas_lga[tas_lga["LGA_NAME"] == "Central Highlands Council"]
 
 #clip all state wide vector layers to central highlands lga subset
 #see https://geopandas.org/en/stable/gallery/plot_clip.html
@@ -120,9 +116,105 @@ print(join_lwbhs.groupby(['ROCK','GEO_AGE']))
 #name of boreholes in each rock category, age and depth in central highlands
 print(join_lwbhs.groupby(['ROCK', 'GEO-AGE', 'NAME'])['Length'].count())
 
+
 #create a map view
+myFig = plt.figure(figsize=(10, 10))
 
+#define my crs as UTM ref
+myCRS = ccrs.UTM(51)
 
-#add data to map
+#create an axis on which to plot data
+ax = plt.axes(projection=ccrs.Mercator())
 
+# assign and add western highlands polygon from subset (if this doesnt work just load central highlands outline shapefile)
+ch_lga_feature = ShapelyFeature(ch_lga['geometry'], myCRS, edgecolor='k', facecolor='w')
+xmin, ymin, xmax, ymax = ch_lga.total_bounds
+ax.add_feature(ch_lga_feature) # add the outline feature to the map.
 
+# using the boundary of the shapefile features, zoom the map to our area of interest
+ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # because total_bounds gives output as xmin, ymin, xmax, ymax,
+# but set_extent takes xmin, xmax, ymin, ymax, we re-order the coordinates here.
+
+#myFig # re-display the figure here.
+
+#to plot rock type we need to first define how many unique rock types there are (9)
+num_rock = len(land_clipped.ROCK.unique())
+print('Number of unique features: {}'.format(num_ROCK)) # note how we're using {} and format here!
+
+# pick colors for the individual county boundaries - make sure to add enough for each of the counties
+# to add a color, enclose the name above (e.g., violet) with single (or double) quotes: 'violet'
+# remember that each colors should be separated by a comma
+rock_colors = ['fuchsia','red','deeppink','darkviolet','khaki','yellow','orange','deepskyblue','limegreen']
+
+# get a list of unique names for the rock types
+rock_names = list(land_clipped.ROCK.unique())
+rock_names.sort() # sort rock types alphabetically by name
+
+# next, add the rock polygon colours to the map using the colors that we've picked.
+# here, we're iterating over the unique values in the 'ROCK' field.
+# we're also setting the edge color to be black, with a line width of 0.5 pt.
+for i, name in enumerate(rock_names):
+    feat = ShapelyFeature(land_clipped['geometry'][land_clipped['ROCK'] == name], myCRS,
+                          edgecolor='k',
+                          facecolor=rock_colors[i],
+                          linewidth=1,
+                          alpha=0.25)
+    ax.add_feature(feat)
+
+#myFig # to show the updated figure
+
+#add remaining vectors to map
+water_feat = ShapelyFeature(water_clipped['geometry'], myCRS,
+                            edgecolor='mediumblue',
+                            facecolor='mediumblue',
+                            linewidth=2)
+ax.add_feature(water_feat)
+
+roads_feat = ShapelyFeature(roads_clipped['geometry'], myCRS,
+                            edgecolor='black',
+                            linewidth=0.8)
+
+ax.add_feature(river_feat)
+
+#assign and plot point data handles using ax.plot()
+bhs_handles = ax.plot(bhs_clipped.geometry.x, bhs_clipped.geometry.y, 'h', ms=8, c='0.9', transform=myCRS)
+
+#detail a legend to match the colours plotted above
+# generate a list of handles for the rock type
+rock_handles = generate_handles(land_clipped.ROCK.unique(), rock_colors, alpha=0.25)
+
+# generate water handle
+water_handles = generate_handles(['Lakes'], ['mediumblue'])
+
+# generate roads handle
+roads_handles = [mlines.Line2D([], [], color='black')]
+
+# enable of rock type polygons to be added to legend/ update ROCK to take it out of uppercase text
+nice_names = [name.title() for name in rock_names]
+
+# ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
+handles = rock_handles + bhs_handles + water_handles + roads_handles
+labels = nice_names + ['Boreholes', 'Lakes', 'Roads']
+
+#add legend
+leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
+                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
+
+#myFig # to show the updated figure
+
+# add gridlines (check the numbers)
+gridlines = ax.gridlines(draw_labels=True,
+                         xlocs=[146, 146.5, 147, 147.5],
+                         ylocs=[-41.5, -42, -42.5])
+gridlines.right_labels = False
+gridlines.bottom_labels = False
+
+#add bh label text
+for i, row in bhs_clipped.iterrows():
+    x, y = row.geometry.x, row.geometry.y # get the x,y location for each bh
+    plt.text(x, y, row['NAME'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
+
+#add scale bar
+scale_bar(ax)
+
+myFig.savefig('map.png', bbox_inches='tight', dpi=300)
