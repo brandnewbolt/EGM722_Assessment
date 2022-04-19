@@ -6,35 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="6fcfe558-5d13-4f0d-ba30-05ee5b431ceb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/egm722_assess_a-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/egm722_assess_a-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_other/.backups/EGM722_Assessment.aprx" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/.backups/EGM722_Assessment.aprx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.aprx" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.aprx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000004.freelist" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000004.freelist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000004.gdbtable" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000004.gdbtable" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000004.gdbtablx" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000004.gdbtablx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000009.gdbtable" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000009.gdbtable" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000009.gdbtablx" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/a00000009.gdbtablx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/timestamps" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/EGM722_Assessment.gdb/timestamps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.fdt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.fdx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.fnm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.frq" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.nrm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.prx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.tii" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/_3p.tis" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/segments.gen" beforeDir="false" afterPath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/segments.gen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/EGM722_Assessment/segments_45" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/Thumbnail/1545046906.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_other/Index/Thumbnail/631777158.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.cpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.dbf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.prj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.sbn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.sbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.shp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.shp.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/c_highlands_lga.shx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/egm722_assess" beforeDir="false" afterPath="$PROJECT_DIR$/egm722_assess" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/egm722_assess_jup.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/egm722_assess_jup.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/egm722_assess_a.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/egm722_assess_a.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

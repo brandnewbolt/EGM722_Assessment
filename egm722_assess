@@ -72,18 +72,13 @@ print(water.crs)
 print(roads.crs)
 print(bhs.crs)
 
-#change projection to web mercator (so same as basemap that will be added later, note epsg20251 is correct for Aus)
-lga = lga.to_crs(epsg=3857)
-land = land.to_crs(epsg=3857)
-water = water.to_crs(epsg=3857)
-roads = roads.to_crs(epsg=3857)
-bhs = bhs.to_crs(epsg=3857)
+#change projection to match layers
+#https://epsg.io/20251-8398
+lga = lga.to_crs(epsg=28355)
+bhs = bhs.to_crs(epsg=28355)
 
-#check all crs match, use assert to raise an error if not true
+#check all crs match, returns true or false
 lga.crs == land.crs == water.crs == roads.crs == bhs.crs
-
-
-
 
 #create a subset of tas lgas to get central highlands lga
 #see https://geopandas.org/en/stable/gallery/plot_clip.html
@@ -104,35 +99,44 @@ water_clip.plot()
 roads_clip.plot()
 bhs_clip.plot()
 
-
-
-#spatial join between clipped land and water layers and show table
+#spatial join between clipped land and water layers, show table and check no. rows (666)
 join_lw = gpd.sjoin(land_clip, water_clip, how='inner', lsuffix='left', rsuffix='right')
 print(join_lw.head())
+len(join_lw)
 
 #drop the index_right column in order to do second join (python wont allow multiple columns by same name)
 join_lw.drop('index_right', axis=1, inplace=True)
 
-#spatial join join_landwater to bh vector layer
-join_lwbhs = gpd.sjoin(join_lw, bhs_clipped, how='inner')
-print(join_lwbhs.head())
+
+#spatial join bhs to landwater, check no of rows (460)
+#join bhs to land water vector
+join_lwbhs = gpd.sjoin(bhs_clip, join_lw, how="inner", op="within")
+len(join_lwbhs)
+
+#check column index
+join_lwbhs.columns
 
 #drop unused columns to tidy table and better view data
 join_lwbhs.drop(['Index_right', 'URL_LINK', 'WB_ID', 'SUBCAT_ID', 'WB_MAP', 'WB_INFO', 'PURPOSE', 'COMPANY', 'DRILL_TYPE'], axis=1, inplace=True)
 print(join_lwbhs.head())
 
-#insert a column with area_km2
-#https://pandas.pydata.org/docs/getting_started/intro_tutorials/05_add_columns.html
-join_lwbhs["AREA_KM2"] = join_lwbhs["SHAPE_AREA"] / 1000000
-
-
-#run some queries
+#run some queries on landwaterbhs
 #print unique values in each column
 print(join_lwbhs.nunique())
 
+#name of each rock, geo age and count of bhs in each rock category in central highlands
+print(join_lwbhs.groupby(['ROCK', 'GEO_AGE', 'NAME'])['LENGTH'].count())
+
+#name of each rock, geo age and sum of bhs depth in each rock category in central highlands
+print(join_lwbhs.groupby(['ROCK', 'GEO_AGE', 'NAME'])['LENGTH'].sum())
+
+#insert a column with area_km2 into lw
+#https://pandas.pydata.org/docs/getting_started/intro_tutorials/05_add_columns.html
+join_lw["AREA_KM2"] = join_lw["SHAPE_AREA"] / 1000000
+
 #Check landform category areas firstly group the data by class
 #https://autogis-site.readthedocs.io/en/latest/notebooks/L2/01-geopandas-basics.html
-grouped_landform = join_lwbhs.groupby('LANDFORM')
+grouped_landform = join_lw.groupby('LANDFORM')
 
 # then iterate over the group
 for key, group in grouped_landform:
@@ -146,7 +150,7 @@ print(landform_area)
 
 #Check rock category areas, firstly group the data by class
 #https://autogis-site.readthedocs.io/en/latest/notebooks/L2/01-geopandas-basics.html
-grouped_rock = join_lwbhs.groupby('ROCK')
+grouped_rock = join_lw.groupby('ROCK')
 
 # then iterate over the group
 for key, group in grouped_rock:
@@ -158,11 +162,7 @@ for key, group in grouped_rock:
 rock_area = grouped_rock.AREA_KM2.sum().round()
 print(rock_area)
 
-#name of each rock, geo age and count of bhs in each rock category in central highlands
-print(join_lwbhs.groupby(['ROCK', 'GEO_AGE', 'NAME'])['LENGTH'].count())
 
-#name of each rock, geo age and sum of bhs depth in each rock category in central highlands
-print(join_lwbhs.groupby(['ROCK', 'GEO_AGE', 'NAME'])['LENGTH'].sum())
 
 
 
@@ -172,7 +172,7 @@ myFig = plt.figure(figsize=(10, 10))
 #define my crs as UTM ref
 myCRS = ccrs.UTM(51)
 
-#create an axis on which to plot data
+#create an axis on which to plot dat
 ax = plt.axes(projection=ccrs.Mercator())
 
 # assign and add western highlands polygon from subset (if this doesnt work just load central highlands outline shapefile)
@@ -186,24 +186,29 @@ ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # because total_bounds gives 
 
 #myFig # re-display the figure here.
 
-#to plot rock type we need to first define how many unique rock types there are (9)
-num_rock = len(land_clipped.ROCK.unique())
+
+#to plot rock type we need to first define how many unique rock types there are (10) although one value is 'none'
+num_rock = len(land_clip.ROCK.unique())
 print('Number of unique features: {}'.format(num_ROCK)) # note how we're using {} and format here!
 
-# pick colors for the individual county boundaries - make sure to add enough for each of the counties
-# to add a color, enclose the name above (e.g., violet) with single (or double) quotes: 'violet'
-# remember that each colors should be separated by a comma
-rock_colors = ['fuchsia','red','deeppink','darkviolet','khaki','yellow','orange','deepskyblue','limegreen']
+# pick colors for the individual rock polygons
+rock_colors = ['r','lightcoral','deeppink','darkviolet','dodgerblue','yellow','orange','mediumblue','green','skyblue',]
 
-# get a list of unique names for the rock types
-rock_names = list(land_clipped.ROCK.unique())
+# get a list of unique names for the rock types - returns an error as there is are null values in rock column
+rock_names = list(land_clip.ROCK.unique())
 rock_names.sort() # sort rock types alphabetically by name
+
+#drop the null values from rock column (i.e. polygons with no names - as in lake areas)
+#https://stackoverflow.com/questions/44681776/ignoring-nan-in-a-dataframe
+rock_names = land_clip['ROCK'].dropna().unique()
+rock_names.sort()
+rock_names
 
 # next, add the rock polygon colours to the map using the colors that we've picked.
 # here, we're iterating over the unique values in the 'ROCK' field.
 # we're also setting the edge color to be black, with a line width of 0.5 pt.
 for i, name in enumerate(rock_names):
-    feat = ShapelyFeature(land_clipped['geometry'][land_clipped['ROCK'] == name], myCRS,
+    feat = ShapelyFeature(land_clip['geometry'][land_clipped['ROCK'] == name], myCRS,
                           edgecolor='k',
                           facecolor=rock_colors[i],
                           linewidth=1,
@@ -211,6 +216,13 @@ for i, name in enumerate(rock_names):
     ax.add_feature(feat)
 
 #myFig # to show the updated figure
+
+
+
+
+
+
+
 
 #add remaining vectors to map
 water_feat = ShapelyFeature(water_clipped['geometry'], myCRS,
