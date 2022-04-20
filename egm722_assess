@@ -10,6 +10,8 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from cartopy.feature import ShapelyFeature
 import cartopy.crs as ccrs
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 
 #enable interactive plotting
 plt.ion()
@@ -217,32 +219,25 @@ for i, name in enumerate(rock_names):
 
 #myFig # to show the updated figure
 
-
-
-
-
-
-
-
 #add remaining vectors to map
-water_feat = ShapelyFeature(water_clipped['geometry'], myCRS,
+water_feat = ShapelyFeature(water_clip['geometry'], myCRS,
                             edgecolor='mediumblue',
                             facecolor='mediumblue',
                             linewidth=2)
 ax.add_feature(water_feat)
 
-roads_feat = ShapelyFeature(roads_clipped['geometry'], myCRS,
+roads_feat = ShapelyFeature(roads_clip['geometry'], myCRS,
                             edgecolor='black',
-                            linewidth=0.8)
+                            linewidth=1.5)
 
-ax.add_feature(river_feat)
+ax.add_feature(roads_feat)
 
 #assign and plot point data handles using ax.plot()
-bhs_handles = ax.plot(bhs_clipped.geometry.x, bhs_clipped.geometry.y, 'h', ms=8, c='0.9', transform=myCRS)
+bhs_handles = ax.plot(bhs_clip.geometry.x, bhs_clip.geometry.y, 'h', ms=8, c='r', transform=myCRS)
 
 #detail a legend to match the colours plotted above
 # generate a list of handles for the rock type
-rock_handles = generate_handles(land_clipped.ROCK.unique(), rock_colors, alpha=0.25)
+rock_handles = generate_handles(land_clip.ROCK.unique(), rock_colors, alpha=0.25)
 
 # generate water handle
 water_handles = generate_handles(['Lakes'], ['mediumblue'])
@@ -250,7 +245,7 @@ water_handles = generate_handles(['Lakes'], ['mediumblue'])
 # generate roads handle
 roads_handles = [mlines.Line2D([], [], color='black')]
 
-# enable of rock type polygons to be added to legend/ update ROCK to take it out of uppercase text
+# enable rock type polygons to be added to legend/ update ROCK to take it out of uppercase text
 nice_names = [name.title() for name in rock_names]
 
 # ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
@@ -262,6 +257,12 @@ leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
                  fontsize=12, loc='upper left', frameon=True, framealpha=1)
 
 #myFig # to show the updated figure
+
+#roads on legend is incorrect... also need to move legend to right side off image
+
+
+
+
 
 # add gridlines (check the numbers)
 gridlines = ax.gridlines(draw_labels=True,
@@ -277,5 +278,7 @@ for i, row in bhs_clipped.iterrows():
 
 #add scale bar
 scale_bar(ax)
+
+#add a title
 
 myFig.savefig('map.png', bbox_inches='tight', dpi=300)
