@@ -177,7 +177,7 @@ myCRS = ccrs.UTM(51)
 #create an axis on which to plot dat
 ax = plt.axes(projection=ccrs.Mercator())
 
-# assign and add western highlands polygon from subset (if this doesnt work just load central highlands outline shapefile)
+# assign and add western highlands polygon from subset
 ch_lga_feature = ShapelyFeature(ch_lga['geometry'], myCRS, edgecolor='k', facecolor='w')
 xmin, ymin, xmax, ymax = ch_lga.total_bounds
 ax.add_feature(ch_lga_feature) # add the outline feature to the map.
@@ -192,6 +192,12 @@ ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # because total_bounds gives 
 #to plot rock type we need to first define how many unique rock types there are (10) although one value is 'none'
 num_rock = len(land_clip.ROCK.unique())
 print('Number of unique features: {}'.format(num_ROCK)) # note how we're using {} and format here!
+
+
+
+
+#have deleted empty rock polygons (ie lakes) from land_100k file - need to reload and check, also how many rock types?
+#hopefully 9 now - delete the 'skyblue' colour from rock colours... maybe now roads will work in legend?
 
 # pick colors for the individual rock polygons
 rock_colors = ['r','lightcoral','deeppink','darkviolet','dodgerblue','yellow','orange','mediumblue','green','skyblue',]
@@ -258,7 +264,7 @@ leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
 
 #myFig # to show the updated figure
 
-#roads on legend is incorrect... also need to move legend to right side off image
+
 
 
 
