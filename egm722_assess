@@ -14,7 +14,8 @@ import matplotlib.lines as mlines
 #enable interactive plotting
 plt.ion()
 
-#function generates handles to create legend for polygon map features (practical 2)
+#function generates handles to create legend for polygon map features (practical 2); defines handle characteristics
+#which require input when function is called, calls colours to be selected from and then assigns characteristics to the legend entries (as patches)
 def generate_handles(labels, colors, edge='k', alpha=1):
     lc = len(colors)  # get the length of the color list
     handles = []
@@ -160,6 +161,7 @@ for key, group in grouped_rock:
 rock_area = grouped_rock.AREA_KM2.sum()
 print(rock_area)
 
+
 #Presentation
 #creates a map view
 myFig = plt.figure(figsize=(10, 10))
@@ -168,6 +170,7 @@ myFig = plt.figure(figsize=(10, 10))
 myCRS = ccrs.UTM(55, southern_hemisphere=True)
 
 #creates an axis on which to plot data
+#https://scitools.org.uk/cartopy/docs/v0.15/_modules/cartopy/crs.html#UTM
 ax = plt.axes(projection=ccrs.Mercator())
 
 #assigns and adds western highlands lga polygon from subset
