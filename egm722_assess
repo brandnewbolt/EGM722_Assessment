@@ -1,5 +1,3 @@
-#docstring here - what does the code do?
-
 # this lets us use the figures interactively
 %matplotlib notebook
 
@@ -16,8 +14,7 @@ import matplotlib.lines as mlines
 #enable interactive plotting
 plt.ion()
 
-#Define functions
-#generate handles to create legend for map features
+#function generates handles to create legend for polygon map features (practical 2)
 def generate_handles(labels, colors, edge='k', alpha=1):
     lc = len(colors)  # get the length of the color list
     handles = []
@@ -25,7 +22,7 @@ def generate_handles(labels, colors, edge='k', alpha=1):
         handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
     return handles
 
-# create a scale bar of length 20 km in the upper right corner of the map
+# function creates a scale bar of length 20 km in the upper right corner of the map (practical 2)
 # adapted this question: https://stackoverflow.com/q/32333870
 # answered by SO user Siyh: https://stackoverflow.com/a/35705477
 def scale_bar(ax, location=(0.92, 0.95)):
@@ -46,175 +43,156 @@ def scale_bar(ax, location=(0.92, 0.95)):
     plt.text(sbx-12500, sby-4500, '10 km', transform=tmc, fontsize=8)
     plt.text(sbx-24500, sby-4500, '0 km', transform=tmc, fontsize=8)
 
-
-#load lga vector outline polygon for central highlands, check row header and CRS
+#loads lga vector outline polygon for central highlands, check row header and CRS
 lga = gpd.read_file('data/tas_lga.shp')
 print(lga.head())
 
-#load land vector polygons for tasmania, check row header and CRS
+#loads land vector polygons for tasmania, check row header and CRS
 land = gpd.read_file('data/land_100k.shp')
 print(land.head())
 
-#load water vector polygons for tasmania, check row header and CRS
+#loads water vector polygons for tasmania, check row header and CRS
 water = gpd.read_file('data/water.shp')
 print(water.head())
 
-#load roads vector lines for tasmania, check row header and CRS
+#loads roads vector lines for tasmania, check row header and CRS
 roads = gpd.read_file('data/tas_roads.shp')
 print(roads.head())
 
-#load boreholes vector points for tasmania, check row header and CRS
+#loads boreholes vector points for tasmania, check row header and CRS
 bhs = gpd.read_file('data/drill_eng_geo.shp')
 print(bhs.head())
 
-#check crs of each layer
+#checks crs of each layer
 print(lga.crs)
 print(land.crs)
 print(water.crs)
 print(roads.crs)
 print(bhs.crs)
 
-#change projection to match layers
+#changes projection to match layers
 #https://epsg.io/20251-8398
 lga = lga.to_crs(epsg=28355)
 bhs = bhs.to_crs(epsg=28355)
 
-#check all crs match, returns true or false
+#checks all crs match, returns true or false
 lga.crs == land.crs == water.crs == roads.crs == bhs.crs
 
-#create a subset of tas lgas to get central highlands lga
+#creates a subset of tas lgas to get central highlands lga polygon only
 #see https://geopandas.org/en/stable/gallery/plot_clip.html
 #ch_lga = lga[lga["LGA_NAME"] == "Central Highlands Council"]
 
-
-#clip all state wide vector layers to central highlands lga subset
+#clips all state wide vector layers to central highlands lga subset
 #see https://geopandas.org/en/stable/docs/reference/api/geopandas.clip.html
 land_clip = gpd.clip(land, ch_lga)
 water_clip = gpd.clip(water, ch_lga)
 roads_clip = gpd.clip(roads, ch_lga)
 bhs_clip = gpd.clip(bhs, ch_lga)
 
-#plot to see how this worked
+#plots clipped vector layers to see how this worked
 #see https://geopandas.org/en/stable/gallery/spatial_joins.html
 land_clip.plot()
 water_clip.plot()
 roads_clip.plot()
 bhs_clip.plot()
 
-#spatial join between clipped land and water layers, show table and check no. rows (666)
+#spatially joins between clipped land and water layers, show table and check no. rows
 join_lw = gpd.sjoin(land_clip, water_clip, how='inner', lsuffix='left', rsuffix='right')
 print(join_lw.head())
 len(join_lw)
 
-#drop the index_right column in order to do second join (python wont allow multiple columns by same name)
+#drops the index_right column in order to do second join (python wont allow multiple columns by same name)
 join_lw.drop('index_right', axis=1, inplace=True)
 
-
-#spatial join bhs to landwater, check no of rows (460)
+#spatially joins bhs to landwater, check no of rows (460)
 #join bhs to land water vector
 join_lwbhs = gpd.sjoin(bhs_clip, join_lw, how="inner", op="within")
 len(join_lwbhs)
 
-#check column index
+#checks column index
 join_lwbhs.columns
 
-#drop unused columns to tidy table and better view data
+#drops unused columns to tidy table and better view data
 join_lwbhs.drop(['Index_right', 'URL_LINK', 'WB_ID', 'SUBCAT_ID', 'WB_MAP', 'WB_INFO', 'PURPOSE', 'COMPANY', 'DRILL_TYPE'], axis=1, inplace=True)
 print(join_lwbhs.head())
 
-#run some queries on landwaterbhs
-#print unique values in each column
+#runs some queries on landwaterbhs
+#prints unique values in each column
 print(join_lwbhs.nunique())
 
-#name of each rock, geo age and count of bhs in each rock category in central highlands
+#names each rock type, geological age and count of bhs in each rock category in central highlands
 print(join_lwbhs.groupby(['ROCK', 'GEO_AGE', 'NAME'])['LENGTH'].count())
 
-#name of each rock, geo age and sum of bhs depth in each rock category in central highlands
+#names each rock, geo age and sum of bhs depth in each rock category in central highlands
 print(join_lwbhs.groupby(['ROCK', 'GEO_AGE', 'NAME'])['LENGTH'].sum())
 
-#insert a column with area_km2 into lw
+#derives new data and inserts a column with area_km2 into lw
 #https://pandas.pydata.org/docs/getting_started/intro_tutorials/05_add_columns.html
 join_lw["AREA_KM2"] = join_lw["SHAPE_AREA"] / 1000000
 
-#Check landform category areas firstly group the data by class
+#checks landform category areas; firstly groups data by class
 #https://autogis-site.readthedocs.io/en/latest/notebooks/L2/01-geopandas-basics.html
 grouped_landform = join_lw.groupby('LANDFORM')
 
-# then iterate over the group
+# then iterates over the group
 for key, group in grouped_landform:
 
-    # Let's check how many rows each group has:
+#checks how many rows each group has:
     print('Landform:', key)
     print('Number of rows:', len(group), "\n")
 
-landform_area = grouped_landform.AREA_KM2.sum().round()
+#shows what area in km2 is covered by each land class
+landform_area = grouped_landform.AREA_KM2.sum()
 print(landform_area)
 
-#Check rock category areas, firstly group the data by class
+#checks rock category areas; firstly groups data by class
 #https://autogis-site.readthedocs.io/en/latest/notebooks/L2/01-geopandas-basics.html
 grouped_rock = join_lw.groupby('ROCK')
 
-# then iterate over the group
+# then iterates over the group
 for key, group in grouped_rock:
 
-    # Let's check how many rows each group has:
+    # checks how many rows each group has:
     print('Rock:', key)
     print('Number of rows:', len(group), "\n")
 
-rock_area = grouped_rock.AREA_KM2.sum().round()
+#shows what area in km2 is covered by each rock type class
+rock_area = grouped_rock.AREA_KM2.sum()
 print(rock_area)
 
-
-
-
-
-#create a map view
+#Presentation
+#creates a map view
 myFig = plt.figure(figsize=(10, 10))
 
-#define my crs as UTM ref
-myCRS = ccrs.UTM(51)
+#defines my crs as UTM ref for Tasmania
+myCRS = ccrs.UTM(55, southern_hemisphere=True)
 
-#create an axis on which to plot dat
+#creates an axis on which to plot data
 ax = plt.axes(projection=ccrs.Mercator())
 
-# assign and add western highlands polygon from subset
+#assigns and adds western highlands lga polygon from subset
 ch_lga_feature = ShapelyFeature(ch_lga['geometry'], myCRS, edgecolor='k', facecolor='w')
 xmin, ymin, xmax, ymax = ch_lga.total_bounds
 ax.add_feature(ch_lga_feature) # add the outline feature to the map.
 
-# using the boundary of the shapefile features, zoom the map to our area of interest
-ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # because total_bounds gives output as xmin, ymin, xmax, ymax,
-# but set_extent takes xmin, xmax, ymin, ymax, we re-order the coordinates here.
+#using the boundary of the shapefile features, zooms the map to our area of interest
+ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS)
 
-#myFig # re-display the figure here.
-
-
-#to plot rock type we need to first define how many unique rock types there are (10) although one value is 'none'
+#plots rock types; firstly defining how many unique rock types there are (9)
 num_rock = len(land_clip.ROCK.unique())
-print('Number of unique features: {}'.format(num_ROCK)) # note how we're using {} and format here!
+print('Number of unique features: {}'.format(num_rock))
 
+#selects colors for the 9 individual rock polygons
+rock_colors = ['r','lightcoral','deeppink','darkviolet','dodgerblue','yellow','orange','mediumblue','green',]
 
-
-
-#have deleted empty rock polygons (ie lakes) from land_100k file - need to reload and check, also how many rock types?
-#hopefully 9 now - delete the 'skyblue' colour from rock colours... maybe now roads will work in legend?
-
-# pick colors for the individual rock polygons
-rock_colors = ['r','lightcoral','deeppink','darkviolet','dodgerblue','yellow','orange','mediumblue','green','skyblue',]
-
-# get a list of unique names for the rock types - returns an error as there is are null values in rock column
-rock_names = list(land_clip.ROCK.unique())
-rock_names.sort() # sort rock types alphabetically by name
-
-#drop the null values from rock column (i.e. polygons with no names - as in lake areas)
+#drops any null values from rock column (i.e. if polygons with no names exist)
 #https://stackoverflow.com/questions/44681776/ignoring-nan-in-a-dataframe
 rock_names = land_clip['ROCK'].dropna().unique()
 rock_names.sort()
 rock_names
 
-# next, add the rock polygon colours to the map using the colors that we've picked.
-# here, we're iterating over the unique values in the 'ROCK' field.
-# we're also setting the edge color to be black, with a line width of 0.5 pt.
+#adds the rock polygon colours to the map using the colors above by iterating over the unique values in the 'ROCK' field
+#also defines features characteristics
 for i, name in enumerate(rock_names):
     feat = ShapelyFeature(land_clip['geometry'][land_clipped['ROCK'] == name], myCRS,
                           edgecolor='k',
@@ -223,9 +201,9 @@ for i, name in enumerate(rock_names):
                           alpha=0.25)
     ax.add_feature(feat)
 
-#myFig # to show the updated figure
+#myFig # shows the updated figure
 
-#add remaining vectors to map
+#adds polygon and line vectors to map
 water_feat = ShapelyFeature(water_clip['geometry'], myCRS,
                             edgecolor='mediumblue',
                             facecolor='mediumblue',
@@ -238,53 +216,55 @@ roads_feat = ShapelyFeature(roads_clip['geometry'], myCRS,
 
 ax.add_feature(roads_feat)
 
-#assign and plot point data handles using ax.plot()
+#assigns and plots point data handles using ax.plot()
 bhs_handles = ax.plot(bhs_clip.geometry.x, bhs_clip.geometry.y, 'h', ms=8, c='r', transform=myCRS)
 
-#detail a legend to match the colours plotted above
-# generate a list of handles for the rock type
+#details a legend to match the colours plotted above
+#generates a list of handles for the rock type
 rock_handles = generate_handles(land_clip.ROCK.unique(), rock_colors, alpha=0.25)
 
-# generate water handle
+#generates water handle
 water_handles = generate_handles(['Lakes'], ['mediumblue'])
 
-# generate roads handle
+#generates roads handle
 roads_handles = [mlines.Line2D([], [], color='black')]
 
-# enable rock type polygons to be added to legend/ update ROCK to take it out of uppercase text
+#enables rock type polygons to be added to legend and updates ROCK names for consistency
 nice_names = [name.title() for name in rock_names]
 
-# ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
+#ax.legend() takes a list of handles and a list of labels corresponding to the objects you want to add to the legend
 handles = rock_handles + bhs_handles + water_handles + roads_handles
 labels = nice_names + ['Boreholes', 'Lakes', 'Roads']
 
 #add legend
+#place legend off the side of fig https://stackoverflow.com/questions/4700614/how-to-put-the-legend-outside-the-plot-in-matplotlib?newreg=300ab0ba0af340879f2d222287d21c2c
 leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
-                 fontsize=12, loc='upper left', frameon=True, framealpha=1)
+                 fontsize=12, bbox_to_anchor=(1.04,0.7), loc='upper left', frameon=True, framealpha=1)
+#add a title
+ax.set_title('Geological strata and borehole locations in Central Higlands, Tasmania', fontsize=16)
 
 #myFig # to show the updated figure
 
 
 
 
-
-
-
-# add gridlines (check the numbers)
-gridlines = ax.gridlines(draw_labels=True,
-                         xlocs=[146, 146.5, 147, 147.5],
-                         ylocs=[-41.5, -42, -42.5])
-gridlines.right_labels = False
-gridlines.bottom_labels = False
-
-#add bh label text
-for i, row in bhs_clipped.iterrows():
+#add bh label text, plotting to coordinates in geometry columns
+for i, row in bhs_clip.iterrows():
     x, y = row.geometry.x, row.geometry.y # get the x,y location for each bh
     plt.text(x, y, row['NAME'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
 
-#add scale bar
+#add scale bar as defined in above function
 scale_bar(ax)
 
-#add a title
 
-myFig.savefig('map.png', bbox_inches='tight', dpi=300)
+
+# add geographic gridlines to map
+gridlines = ax.gridlines(draw_labels=True,
+                         xlocs=[146, 146.5, 147],
+                         ylocs=[-42, -42.5])
+gridlines.left_labels = True
+gridlines.bottom_labels = True
+ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # set the extent to the boundaries of the central highlands polygon
+
+#save
+myFig.savefig('tas_geo.png', bbox_inches='tight', dpi=300)
