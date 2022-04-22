@@ -1,9 +1,22 @@
+'''Loads vector files to first query data regarding geology, landform and borehole details within a local governement area
+subset (Central Highlands) in Tasmania.  Map presents geological strata, lakes and borehole locations and borehole names.
+Vector files are names lga, land, water, roads and boreholes.
+[1] crs checked and changed to match all layers
+[2] lga clipped to Central Highlands only (producing ch_lga)
+[3] files are clipped to ch_lga [producing e.g. land_clip]
+[4] spatial join between land and water [producing join_lw]
+[5] spatial join between join_lw and bhs [producing join_lwbhs]
+[6] run some queries; checks number of rows; groupby determines counts and length sums of bhs present/ geological strata and age;
+inserts new column with area km2; groupby determines land and rock area in km2
+[7] creates map, defines myCRS, creates axis, plots all vector layers, creates associated handles for legend and plots legend,
+adds title
+[8] saves output'''
+
 # this lets us use the figures interactively
 %matplotlib notebook
 
-#import modules (straight from wk2&3 so far) - do i need more?
+#[1] imports libraries and modules
 import pandas as pd
-import geopandas as gpd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from cartopy.feature import ShapelyFeature
@@ -14,6 +27,7 @@ import matplotlib.lines as mlines
 #enable interactive plotting
 plt.ion()
 
+#[2] defines functions
 #function generates handles to create legend for polygon map features (practical 2); defines handle characteristics
 #which require input when function is called, calls colours to be selected from and then assigns characteristics to the legend entries (as patches)
 def generate_handles(labels, colors, edge='k', alpha=1):
@@ -44,11 +58,12 @@ def scale_bar(ax, location=(0.92, 0.95)):
     plt.text(sbx-12500, sby-4500, '10 km', transform=tmc, fontsize=8)
     plt.text(sbx-24500, sby-4500, '0 km', transform=tmc, fontsize=8)
 
-#loads lga vector outline polygon for central highlands, check row header and CRS
+#[3] loads datasets, checks and changes CRS
+#loads lga vector outline polygon for central highlands, checks row header and CRS
 lga = gpd.read_file('data/tas_lga.shp')
 print(lga.head())
 
-#loads land vector polygons for tasmania, check row header and CRS
+#loads land vector polygons for tasmania, checks row header and CRS
 land = gpd.read_file('data/land_100k.shp')
 print(land.head())
 
@@ -56,11 +71,11 @@ print(land.head())
 water = gpd.read_file('data/water.shp')
 print(water.head())
 
-#loads roads vector lines for tasmania, check row header and CRS
+#loads roads vector lines for tasmania, checks row header and CRS
 roads = gpd.read_file('data/tas_roads.shp')
 print(roads.head())
 
-#loads boreholes vector points for tasmania, check row header and CRS
+#loads boreholes vector points for tasmania, checks row header and CRS
 bhs = gpd.read_file('data/drill_eng_geo.shp')
 print(bhs.head())
 
@@ -71,6 +86,7 @@ print(water.crs)
 print(roads.crs)
 print(bhs.crs)
 
+
 #changes projection to match layers
 #https://epsg.io/20251-8398
 lga = lga.to_crs(epsg=28355)
@@ -79,9 +95,10 @@ bhs = bhs.to_crs(epsg=28355)
 #checks all crs match, returns true or false
 lga.crs == land.crs == water.crs == roads.crs == bhs.crs
 
+#[4] manipulates and queries datasets
 #creates a subset of tas lgas to get central highlands lga polygon only
 #see https://geopandas.org/en/stable/gallery/plot_clip.html
-#ch_lga = lga[lga["LGA_NAME"] == "Central Highlands Council"]
+ch_lga = lga[lga["LGA_NAME"] == "Central Highlands Council"]
 
 #clips all state wide vector layers to central highlands lga subset
 #see https://geopandas.org/en/stable/docs/reference/api/geopandas.clip.html
@@ -97,7 +114,7 @@ water_clip.plot()
 roads_clip.plot()
 bhs_clip.plot()
 
-#spatially joins between clipped land and water layers, show table and check no. rows
+#spatially joins between clipped land and water layers, shows table and check no. rows (660)
 join_lw = gpd.sjoin(land_clip, water_clip, how='inner', lsuffix='left', rsuffix='right')
 print(join_lw.head())
 len(join_lw)
@@ -105,7 +122,7 @@ len(join_lw)
 #drops the index_right column in order to do second join (python wont allow multiple columns by same name)
 join_lw.drop('index_right', axis=1, inplace=True)
 
-#spatially joins bhs to landwater, check no of rows (460)
+#spatially joins bhs to landwater, check no of rows (376)
 #join bhs to land water vector
 join_lwbhs = gpd.sjoin(bhs_clip, join_lw, how="inner", op="within")
 len(join_lwbhs)
@@ -115,9 +132,13 @@ join_lwbhs.columns
 
 #drops unused columns to tidy table and better view data
 join_lwbhs.drop(['Index_right', 'URL_LINK', 'WB_ID', 'SUBCAT_ID', 'WB_MAP', 'WB_INFO', 'PURPOSE', 'COMPANY', 'DRILL_TYPE'], axis=1, inplace=True)
+
+#prints head of join_lwbhs
 print(join_lwbhs.head())
 
-#runs some queries on landwaterbhs
+#prints unique values in each column
+print(join_lw.nunique())
+
 #prints unique values in each column
 print(join_lwbhs.nunique())
 
@@ -162,7 +183,7 @@ rock_area = grouped_rock.AREA_KM2.sum()
 print(rock_area)
 
 
-#Presentation
+#[5] map presentation
 #creates a map view
 myFig = plt.figure(figsize=(10, 10))
 
@@ -239,29 +260,14 @@ nice_names = [name.title() for name in rock_names]
 handles = rock_handles + bhs_handles + water_handles + roads_handles
 labels = nice_names + ['Boreholes', 'Lakes', 'Roads']
 
-#add legend
+#adds legend
 #place legend off the side of fig https://stackoverflow.com/questions/4700614/how-to-put-the-legend-outside-the-plot-in-matplotlib?newreg=300ab0ba0af340879f2d222287d21c2c
 leg = ax.legend(handles, labels, title='Legend', title_fontsize=14,
                  fontsize=12, bbox_to_anchor=(1.04,0.7), loc='upper left', frameon=True, framealpha=1)
-#add a title
+#adds a title
 ax.set_title('Geological strata and borehole locations in Central Higlands, Tasmania', fontsize=16)
 
-#myFig # to show the updated figure
-
-
-
-
-#add bh label text, plotting to coordinates in geometry columns
-for i, row in bhs_clip.iterrows():
-    x, y = row.geometry.x, row.geometry.y # get the x,y location for each bh
-    plt.text(x, y, row['NAME'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
-
-#add scale bar as defined in above function
-scale_bar(ax)
-
-
-
-# add geographic gridlines to map
+#adds projected gridlines to map
 gridlines = ax.gridlines(draw_labels=True,
                          xlocs=[146, 146.5, 147],
                          ylocs=[-42, -42.5])
@@ -269,5 +275,24 @@ gridlines.left_labels = True
 gridlines.bottom_labels = True
 ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # set the extent to the boundaries of the central highlands polygon
 
-#save
+#myFig # to show the updated figure
+
+
+
+
+
+
+#adds bh label text, plotting to coordinates in geometry columns
+for i, row in bhs_clip.iterrows():
+    x, y = row.geometry.x, row.geometry.y # get the x,y location for each bh
+    plt.text(x, y, row['NAME'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
+
+#adds scale bar as defined in above function
+scale_bar(ax)
+
+
+
+
+
+#saves figure
 myFig.savefig('tas_geo.png', bbox_inches='tight', dpi=300)
