@@ -16,6 +16,7 @@ adds title
 %matplotlib notebook
 
 #[1] imports libraries and modules
+#imports modules
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -23,6 +24,8 @@ from cartopy.feature import ShapelyFeature
 import cartopy.crs as ccrs
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
+from matplotlib_scalebar.scalebar import ScaleBar
+from shapely.geometry.point import Point
 
 #enable interactive plotting
 plt.ion()
@@ -277,22 +280,13 @@ ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS) # set the extent to the bound
 
 #myFig # to show the updated figure
 
-
-
-
-
-
 #adds bh label text, plotting to coordinates in geometry columns
 for i, row in bhs_clip.iterrows():
     x, y = row.geometry.x, row.geometry.y # get the x,y location for each bh
-    plt.text(x, y, row['NAME'].title(), fontsize=8, transform=myCRS) # use plt.text to place a label at x,y
+    ax.text(x, y, row['NAME'].title(), fontsize=8, transform=myCRS) # use ax.text to place a label at x,y
 
-#adds scale bar as defined in above function
-scale_bar(ax)
-
-
-
-
+#add a scalebar from https://geopandas.org/en/stable/gallery/matplotlib_scalebar.html#Geographic-coordinate-system-(degrees)
+ax.add_artist(ScaleBar(1))
 
 #saves figure
 myFig.savefig('tas_geo.png', bbox_inches='tight', dpi=300)
