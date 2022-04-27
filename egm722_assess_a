@@ -8,8 +8,8 @@ Vector files are names lga, land, water, roads and boreholes.
 [5] spatial join between join_lw and bhs [producing join_lwbhs]
 [6] run some queries; checks number of rows; groupby determines counts and length sums of bhs present/ geological strata and age;
 inserts new column with area km2; groupby determines land and rock area in km2
-[7] creates map, defines myCRS, creates axis, plots all vector layers, creates associated handles for legend and plots legend,
-adds title
+[7] creates map, defines myCRS, creates axis, plots all vector layers, adds scalebar, creates associated handles for
+legend and plots legend, adds title
 [8] saves output'''
 
 # this lets us use the figures interactively
@@ -91,9 +91,12 @@ print(bhs.crs)
 
 
 #changes projection to match layers
-#https://epsg.io/20251-8398
-lga = lga.to_crs(epsg=28355)
-bhs = bhs.to_crs(epsg=28355)
+https://epsg.io/32755
+lga = lga.to_crs(epsg=32755)
+land = land.to_crs(epsg=32755)
+water = water.to_crs(epsg=32755)
+roads = roads.to_crs(epsg=32755)
+bhs = bhs.to_crs(epsg=32755)
 
 #checks all crs match, returns true or false
 lga.crs == land.crs == water.crs == roads.crs == bhs.crs
@@ -194,7 +197,7 @@ myFig = plt.figure(figsize=(10, 10))
 myCRS = ccrs.UTM(55, southern_hemisphere=True)
 
 #creates an axis on which to plot data
-#https://scitools.org.uk/cartopy/docs/v0.15/_modules/cartopy/crs.html#UTM
+#https://scitools.org.uk/cartopy/docs/v0.15/_modules/cartopy/crs.html#UTM for projection
 ax = plt.axes(projection=ccrs.Mercator())
 
 #assigns and adds western highlands lga polygon from subset
