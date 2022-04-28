@@ -1,16 +1,16 @@
-'''Loads vector files to first query data regarding geology, landform and borehole details within a local governement area
-subset (Central Highlands) in Tasmania.  Map presents geological strata, lakes and borehole locations and borehole names.
-Vector files are names lga, land, water, roads and boreholes.
-[1] crs checked and changed to match all layers
-[2] lga clipped to Central Highlands only (producing ch_lga)
-[3] files are clipped to ch_lga [producing e.g. land_clip]
-[4] spatial join between land and water [producing join_lw]
-[5] spatial join between join_lw and bhs [producing join_lwbhs]
-[6] run some queries; checks number of rows; groupby determines counts and length sums of bhs present/ geological strata and age;
-inserts new column with area km2; groupby determines land and rock area in km2
-[7] creates map, defines myCRS, creates axis, plots all vector layers, adds scalebar, creates associated handles for
-legend and plots legend, adds title
-[8] saves output'''
+#Loads vector files to first query data regarding geology, landform and borehole details within a local governement area
+#subset (Central Highlands) in Tasmania.  Map presents geological strata, lakes and borehole locations and borehole names.
+#Vector files are names lga, land, water, roads and boreholes.
+#[1] crs checked and changed to match all layers
+#[2] lga clipped to Central Highlands only (producing ch_lga)
+#[3] files are clipped to ch_lga [producing e.g. land_clip]
+#[4] spatial join between land and water [producing join_lw]
+#[5] spatial join between join_lw and bhs [producing join_lwbhs]
+#[6] run some queries; checks number of rows; groupby determines counts and length sums of bhs present/ geological strata and age;
+#inserts new column with area km2; groupby determines land and rock area in km2
+#[7] creates map, defines myCRS, creates axis, plots all vector layers, creates associated handles for legend and plots legend,
+#adds title
+#[8] saves output
 
 # this lets us use the figures interactively
 %matplotlib notebook
