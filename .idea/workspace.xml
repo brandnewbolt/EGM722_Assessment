@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6fcfe558-5d13-4f0d-ba30-05ee5b431ceb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/egm722_assess_a-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/egm722_assess_a-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/egm722_assess_a.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/egm722_assess_a.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tas_geo.png" beforeDir="false" afterPath="$PROJECT_DIR$/tas_geo.png" afterDir="false" />
-    </list>
+    <list default="true" id="6fcfe558-5d13-4f0d-ba30-05ee5b431ceb" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
