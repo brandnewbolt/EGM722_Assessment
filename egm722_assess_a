@@ -1,16 +1,16 @@
-#Loads vector files to first query data regarding geology, landform and borehole details within a local governement area
-#subset (Central Highlands) in Tasmania.  Map presents geological strata, lakes and borehole locations and borehole names.
-#Vector files are names lga, land, water, roads and boreholes.
-#[1] crs checked and changed to match all layers
-#[2] lga clipped to Central Highlands only (producing ch_lga)
-#[3] files are clipped to ch_lga [producing e.g. land_clip]
-#[4] spatial join between land and water [producing join_lw]
-#[5] spatial join between join_lw and bhs [producing join_lwbhs]
-#[6] run some queries; checks number of rows; groupby determines counts and length sums of bhs present/ geological strata and age;
-#inserts new column with area km2; groupby determines land and rock area in km2
-#[7] creates map, defines myCRS, creates axis, plots all vector layers, creates associated handles for legend and plots legend,
-#adds title
-#[8] saves output
+"""Queries data and produces map regarding geology, landform and borehole details within the Central Highlands in Tasmania.
+
+[a] loads vector layers: lga, land, water, roads and boreholes
+[b] crs checked and changed to match all layers
+[c] lga clipped to Central Highlands only (producing ch_lga)
+[d] files are clipped to ch_lga [producing e.g. land_clip]
+[e] spatial join between land and water [producing join_lw]
+[f] spatial join between join_lw and bhs [producing join_lwbhs]
+[g] run some queries; checks number of rows; groupby determines counts and length sums of bhs present/ geological strata and age;
+inserts new column with area km2; groupby determines land and rock area in km2
+[h] creates map, defines myCRS, creates axis, plots all vector layers, creates associated handles for legend and plots legend,
+adds title
+[i] saves output"""
 
 # this lets us use the figures interactively
 %matplotlib notebook
@@ -39,27 +39,6 @@ def generate_handles(labels, colors, edge='k', alpha=1):
     for i in range(len(labels)):
         handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
     return handles
-
-# function creates a scale bar of length 20 km in the upper right corner of the map (practical 2)
-# adapted this question: https://stackoverflow.com/q/32333870
-# answered by SO user Siyh: https://stackoverflow.com/a/35705477
-def scale_bar(ax, location=(0.92, 0.95)):
-    llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
-    sbllx = (llx1 + llx0) / 2
-    sblly = lly0 + (lly1 - lly0) * location[1]
-
-    tmc = ccrs.TransverseMercator(sbllx, sblly)
-    x0, x1, y0, y1 = ax.get_extent(tmc)
-    sbx = x0 + (x1 - x0) * location[0]
-    sby = y0 + (y1 - y0) * location[1]
-
-    plt.plot([sbx, sbx - 20000], [sby, sby], color='k', linewidth=9, transform=tmc)
-    plt.plot([sbx, sbx - 10000], [sby, sby], color='k', linewidth=6, transform=tmc)
-    plt.plot([sbx-10000, sbx - 20000], [sby, sby], color='w', linewidth=6, transform=tmc)
-
-    plt.text(sbx, sby-4500, '20 km', transform=tmc, fontsize=8)
-    plt.text(sbx-12500, sby-4500, '10 km', transform=tmc, fontsize=8)
-    plt.text(sbx-24500, sby-4500, '0 km', transform=tmc, fontsize=8)
 
 #[3] loads datasets, checks and changes CRS
 #loads lga vector outline polygon for central highlands, checks row header and CRS
@@ -105,6 +84,9 @@ lga.crs == land.crs == water.crs == roads.crs == bhs.crs
 #creates a subset of tas lgas to get central highlands lga polygon only
 #see https://geopandas.org/en/stable/gallery/plot_clip.html
 ch_lga = lga[lga["LGA_NAME"] == "Central Highlands Council"]
+
+#plots extent of lga
+ch_lga.plot()
 
 #clips all state wide vector layers to central highlands lga subset
 #see https://geopandas.org/en/stable/docs/reference/api/geopandas.clip.html
